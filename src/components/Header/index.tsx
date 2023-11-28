@@ -11,7 +11,10 @@ const Header: React.FC<HeaderProps> = ({ navigationItems }) => {
       <nav className="px-[10px]">
         <ul className="flex">
           {navigationItems.map((navigationItem) => (
-            <NavigationList navigationItem={navigationItem} />
+            <NavigationList
+              key={navigationItem.id}
+              navigationItem={navigationItem}
+            />
           ))}
         </ul>
       </nav>
