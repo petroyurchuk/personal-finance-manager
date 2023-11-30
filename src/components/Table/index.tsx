@@ -11,6 +11,7 @@ interface TableProps<T> {
   columns: TableColumn<T>[];
   editPath?: string;
   onDelete?: (id: number) => void;
+  total?: number;
 }
 
 const Table = <T extends CategoriesTypes | TransactionsTypes>({
@@ -18,6 +19,7 @@ const Table = <T extends CategoriesTypes | TransactionsTypes>({
   columns,
   editPath,
   onDelete,
+  total,
 }: TableProps<T>) => {
   const navigate = useNavigate();
 
@@ -30,7 +32,9 @@ const Table = <T extends CategoriesTypes | TransactionsTypes>({
               {column.label}
             </th>
           ))}
-          <th className="border-2  border-gray-500">Управління</th>
+          {onDelete && (
+            <th className="border-2  border-gray-500">Управління</th>
+          )}
         </tr>
       </thead>
       <tbody>
@@ -39,31 +43,40 @@ const Table = <T extends CategoriesTypes | TransactionsTypes>({
             {columns.map((column) => (
               <td
                 key={column.label}
-                className="border-r-2 border-l-2 border-b-2 border-gray-500"
+                className="border-r-2 border-l-2 border-b-2 border-gray-500 text-center"
               >
                 {String(item[column.field])}
               </td>
             ))}
-            <td className="border-r-2 border-b-2 border-gray-500 text-center">
-              {editPath && (
+            {editPath && onDelete && (
+              <td className="border-r-2 border-b-2 border-gray-500 text-center">
                 <button
                   onClick={() => navigate(`${editPath}${item.id}`)}
                   className="hover:scale-110 transition-all duration-100"
                 >
                   <MdEditSquare size={20} />
                 </button>
-              )}
-              {onDelete && (
+
                 <button
                   onClick={() => onDelete(item.id)}
                   className="hover:scale-110 transition-all duration-100"
                 >
                   <AiOutlineDelete size={20} />
                 </button>
-              )}
-            </td>
+              </td>
+            )}
           </tr>
         ))}
+        {!onDelete && (
+          <tr>
+            <td className="border-2 border-t-0 border-gray-500 text-center">
+              Всього
+            </td>
+            <td className="border-2 border-t-0 border-gray-500 text-center">
+              {total}
+            </td>
+          </tr>
+        )}
       </tbody>
     </table>
   );

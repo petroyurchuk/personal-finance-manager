@@ -7,6 +7,7 @@ import {
   EditPage,
   EditTransactionPage,
   GeneratorPage,
+  GraphicPage,
   NewTransactionPage,
   RegistrationPage,
   TransactionPage,
@@ -24,6 +25,7 @@ const App: React.FC = () => {
         <Route path="/new-transaction" element={<NewTransactionPage />} />
         <Route path="/edit-transaction/:id" element={<EditTransactionPage />} />
         <Route path="/generator" element={<GeneratorPage />} />
+        <Route path="/graphic-page" element={<GraphicPage />} />
       </Routes>
     </div>
   );

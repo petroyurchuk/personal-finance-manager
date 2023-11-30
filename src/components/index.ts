@@ -6,3 +6,4 @@ export { default as Form } from "./Form";
 export { default as FormTransaction } from "./FormTransaction";
 export { default as Selector } from "./Selector";
 export { default as FormGenerator } from "./FormGenerator";
+export { default as Table } from "./Table";

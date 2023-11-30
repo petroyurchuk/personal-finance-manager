@@ -13,7 +13,7 @@ const FormTransaction: React.FC<FormTransactionProps> = ({ transaction }) => {
     transaction?.TypeOfOperation ? transaction.TypeOfOperation : ""
   );
   const [total, setTotal] = React.useState(
-    transaction?.total ? transaction.total : ""
+    transaction?.total ? transaction.total : 0
   );
   const [description, setDescription] = React.useState(
     transaction?.description ? transaction.description : ""
@@ -90,7 +90,7 @@ const FormTransaction: React.FC<FormTransactionProps> = ({ transaction }) => {
         <label htmlFor="total">Total</label>
         <input
           value={total}
-          onChange={(e) => setTotal(e.target.value)}
+          onChange={(e) => setTotal(parseInt(e.target.value))}
           id="total"
           className="custom-input"
           type="number"
