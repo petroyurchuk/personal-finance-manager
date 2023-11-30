@@ -1,9 +1,9 @@
 import { CategoriesTypes } from "../@types/categories";
-import { categories } from "../data/categories";
+import { TransactionsTypes } from "../@types/transactions";
 
-export const filterData = (
-  categories: CategoriesTypes[],
-  filterBy: keyof CategoriesTypes,
+export const filterData = <T extends CategoriesTypes | TransactionsTypes>(
+  categories: T[],
+  filterBy: keyof T,
   textComparison: string
 ) => {
   return textComparison
@@ -16,12 +16,9 @@ export const filterData = (
       })
     : categories;
 };
-export const filterDataById = (categories: CategoriesTypes[], id: number) => {
-  return categories.find((category) => category.id === id);
-};
-export const changeData = (id: number, changedCategory: CategoriesTypes) => {
-  const indexOfObjToChange = categories.findIndex(
-    (category) => category.id === id
-  );
-  categories[indexOfObjToChange] = changedCategory;
+export const filterDataById = <T extends CategoriesTypes | TransactionsTypes>(
+  items: T[],
+  id: number
+) => {
+  return items.find((item) => item.id === id);
 };

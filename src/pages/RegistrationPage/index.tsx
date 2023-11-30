@@ -1,8 +1,9 @@
+import React from "react";
 import { Form, Title } from "../../components";
 import CommonLayout from "../../layouts/CommonLayout";
 
-type Props = {};
-const RegistrationPage = (props: Props) => {
+type RegistrationPageProps = {};
+const RegistrationPage: React.FC<RegistrationPageProps> = () => {
   return (
     <>
       <Title>

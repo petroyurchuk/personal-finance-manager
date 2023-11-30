@@ -6,7 +6,9 @@ export interface CategoriesTypes {
 
 export interface CategoryInitialState {
   categorySearch: string;
-  newNameCategory: string;
-  newDescriptionCategory: string;
   categories: CategoriesTypes[];
+}
+export interface changeDataTypes {
+  id: number;
+  changedCategory: CategoriesTypes;
 }

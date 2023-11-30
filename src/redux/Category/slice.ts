@@ -4,8 +4,6 @@ import { categories } from "../../data/categories";
 
 const initialState: CategoryInitialState = {
   categorySearch: "",
-  newNameCategory: "",
-  newDescriptionCategory: "",
   categories: categories,
 };
 
@@ -15,12 +13,6 @@ const CategorySlice = createSlice({
   reducers: {
     setCategorySearch(state, action: PayloadAction<string>) {
       state.categorySearch = action.payload;
-    },
-    setNewNameCategory(state, action: PayloadAction<string>) {
-      state.newNameCategory = action.payload;
-    },
-    setNewDescriptionCategory(state, action: PayloadAction<string>) {
-      state.newDescriptionCategory = action.payload;
     },
     addNewCategory(state, action: PayloadAction<CategoriesTypes>) {
       if (state.categories.length > 0) {
@@ -36,15 +28,19 @@ const CategorySlice = createSlice({
         (category) => category.id !== action.payload
       );
     },
+    changeData(
+      state,
+      action: PayloadAction<{ id: number; changedCategory: CategoriesTypes }>
+    ) {
+      const indexOfObjToChange = state.categories.findIndex(
+        (category) => category.id === action.payload.id
+      );
+      state.categories[indexOfObjToChange] = action.payload.changedCategory;
+    },
   },
 });
 
-export const {
-  setCategorySearch,
-  setNewNameCategory,
-  setNewDescriptionCategory,
-  addNewCategory,
-  deleteCategory,
-} = CategorySlice.actions;
+export const { setCategorySearch, addNewCategory, deleteCategory, changeData } =
+  CategorySlice.actions;
 
 export default CategorySlice.reducer;

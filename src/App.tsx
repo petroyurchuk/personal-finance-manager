@@ -1,10 +1,16 @@
 import React from "react";
 import { Header } from "./components";
 import { navigationList } from "./data/navigation";
-import CategoriesPage from "./pages/CategoriesPage";
 import { Routes, Route } from "react-router-dom";
-import RegistrationPage from "./pages/RegistrationPage";
-import EditPage from "./pages/EditPage";
+import {
+  CategoriesPage,
+  EditPage,
+  EditTransactionPage,
+  GeneratorPage,
+  NewTransactionPage,
+  RegistrationPage,
+  TransactionPage,
+} from "./pages";
 
 const App: React.FC = () => {
   return (
@@ -14,6 +20,10 @@ const App: React.FC = () => {
         <Route path="/" element={<CategoriesPage />} />
         <Route path="/registration" element={<RegistrationPage />} />
         <Route path="/editing/:id" element={<EditPage />} />
+        <Route path="/transaction" element={<TransactionPage />} />
+        <Route path="/new-transaction" element={<NewTransactionPage />} />
+        <Route path="/edit-transaction/:id" element={<EditTransactionPage />} />
+        <Route path="/generator" element={<GeneratorPage />} />
       </Routes>
     </div>
   );

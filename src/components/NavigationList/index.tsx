@@ -1,6 +1,7 @@
 import React from "react";
 import { NavigationItem } from "../../@types/navigation";
 import { IoIosArrowForward } from "react-icons/io";
+import { Link } from "react-router-dom";
 type NavigationListProps = {
   navigationItem: NavigationItem;
 };
@@ -14,9 +15,9 @@ const NavigationList: React.FC<NavigationListProps> = ({ navigationItem }) => {
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
     >
-      <a
+      <Link
         className="tracking-wide uppercase flex flex-1 transition-all duration-200 hover:tracking-wider items-center justify-center"
-        href="/"
+        to={navigationItem.linkTo}
       >
         {navigationItem.name}
         {hasChildren && (
@@ -26,7 +27,7 @@ const NavigationList: React.FC<NavigationListProps> = ({ navigationItem }) => {
             } transition-all duration-200`}
           />
         )}
-      </a>
+      </Link>
       {hasChildren && (
         <ul
           className={`absolute top-[100%] left-0 bg-black min-w-[120px]  ${
