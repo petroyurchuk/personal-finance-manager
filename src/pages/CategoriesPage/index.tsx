@@ -1,28 +1,39 @@
 import React from "react";
-import { Button, Input, Title } from "../../components";
-import CommonLayout from "../../layouts/CommonLayout";
-import Table from "../../components/Table";
-import { filterData } from "../../utils/filterData";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { useNavigate } from "react-router-dom";
-import { TableColumn } from "../../@types/table";
-import { deleteCategory } from "../../redux/Category/slice";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import {
+  fetchCategories,
+  deleteCategory,
+} from "../../redux/Category/asyncActions";
+import {
+  Button,
+  Input,
+  Title,
+  Table,
+  StatusDisplayComponent,
+} from "../../components";
+import CommonLayout from "../../layouts/CommonLayout";
+import { filterData } from "../../utils/filterData";
 import { CategoriesTypes } from "../../@types/categories";
-
-const columns: TableColumn<CategoriesTypes>[] = [
-  { label: "ID", field: "id" },
-  { label: "Назва", field: "name" },
-  { label: "Опис", field: "description" },
-  // Додайте інші колонки, які вам потрібно відображати
-];
+import { categoriesPageColumns } from "../../data/columns";
 
 type CategoriesPageProps = {};
+
 const CategoriesPage: React.FC<CategoriesPageProps> = () => {
   const dispatch = useAppDispatch();
-  const { categorySearch, categories } = useAppSelector(
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    dispatch(fetchCategories());
+  }, []);
+
+  const { categorySearch, categories, loading, error } = useAppSelector(
     (state) => state.category
   );
-  const navigate = useNavigate();
+
+  if (loading || error)
+    return <StatusDisplayComponent error={error} isLoading={loading} />;
+
   return (
     <div>
       <Title>Категорії витрат / доходів</Title>
@@ -30,7 +41,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = () => {
         <Input />
         <Table<CategoriesTypes>
           items={filterData(categories, "name", categorySearch)}
-          columns={columns}
+          columns={categoriesPageColumns}
           editPath={"/editing/"}
           onDelete={(id) => dispatch(deleteCategory(id))}
         />

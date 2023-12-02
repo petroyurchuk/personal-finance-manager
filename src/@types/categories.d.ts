@@ -4,10 +4,6 @@ export interface CategoriesTypes {
   description: string;
 }
 
-export interface CategoryInitialState {
-  categorySearch: string;
-  categories: CategoriesTypes[];
-}
 export interface changeDataTypes {
   id: number;
   changedCategory: CategoriesTypes;

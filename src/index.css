@@ -32,3 +32,6 @@
 .custom-btn-date {
   @apply bg-gray-800 hover:bg-gray-700;
 }
+.custom-form-error {
+  @apply text-red-700 text-[18px] text-center;
+}

@@ -1,16 +1,21 @@
 import React from "react";
 import { TransactionsTypes } from "../../@types/transactions";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { addNewTransaction, changeData } from "../../redux/Transaction/slice";
+import {
+  addNewTransaction,
+  changeData,
+} from "../../redux/Transaction/asyncActions";
 import { useNavigate } from "react-router-dom";
 type FormTransactionProps = {
   transaction?: TransactionsTypes;
 };
 const FormTransaction: React.FC<FormTransactionProps> = ({ transaction }) => {
   const { categories } = useAppSelector((state) => state.category);
-  const [category, setCategory] = React.useState("");
+  const [category, setCategory] = React.useState(
+    transaction?.category ? transaction.category : ""
+  );
   const [typeOfOperation, setTypeOfOperation] = React.useState(
-    transaction?.TypeOfOperation ? transaction.TypeOfOperation : ""
+    transaction?.typeOfOperation ? transaction.typeOfOperation : ""
   );
   const [total, setTotal] = React.useState(
     transaction?.total ? transaction.total : 0
@@ -21,6 +26,7 @@ const FormTransaction: React.FC<FormTransactionProps> = ({ transaction }) => {
   const [date, setDate] = React.useState(
     transaction?.date ? transaction.date : ""
   );
+  const [error, setError] = React.useState("");
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -29,37 +35,50 @@ const FormTransaction: React.FC<FormTransactionProps> = ({ transaction }) => {
     e.preventDefault();
 
     if (transaction) {
-      if (typeOfOperation && description) {
+      if (typeOfOperation && description && total && date && category) {
         dispatch(
           changeData({
             id: transaction.id,
             category,
-            TypeOfOperation: typeOfOperation,
+            typeOfOperation,
             total,
             description,
             date,
           })
         );
+        setError("");
         navigate("/transaction");
         return;
       }
     }
-    if (typeOfOperation && description) {
+    if (typeOfOperation && description && total && date && category) {
       dispatch(
         addNewTransaction({
           id: 3,
           category,
-          TypeOfOperation: typeOfOperation,
+          typeOfOperation,
           total,
           date,
           description,
         })
       );
+      setError("");
       navigate("/transaction");
+      return;
     }
+    setError("Заповніть всі поля");
   };
+
+  const reset = () => {
+    setCategory("");
+    setDate("");
+    setTotal(0);
+    setDescription("");
+    setTypeOfOperation("");
+  };
+
   return (
-    <form onSubmit={submit} className="custom-form ">
+    <form onSubmit={submit} onReset={reset} className="custom-form ">
       <div className="custom-block-cover">
         <label htmlFor="nameCategory">Name of Category</label>
         <select
@@ -116,6 +135,7 @@ const FormTransaction: React.FC<FormTransactionProps> = ({ transaction }) => {
           type="date"
         />
       </div>
+      {error && <p className="custom-form-error">{error}</p>}
       <div className="custom-block-cover-btns">
         <button className="custom-btn-save" type="submit">
           Save

@@ -1,46 +1,59 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CategoriesTypes, CategoryInitialState } from "../../@types/categories";
-import { categories } from "../../data/categories";
+import { CategoryInitialState } from "./types";
+import {
+  fetchCategories,
+  deleteCategory,
+  addNewCategory,
+  changeData,
+} from "./asyncActions";
+import { isError } from "../../utils/reduxUtils";
 
 const initialState: CategoryInitialState = {
   categorySearch: "",
-  categories: categories,
+  categories: [],
+  error: null,
+  loading: false,
 };
 
 const CategorySlice = createSlice({
-  name: "Category",
+  name: "category",
   initialState,
   reducers: {
     setCategorySearch(state, action: PayloadAction<string>) {
       state.categorySearch = action.payload;
     },
-    addNewCategory(state, action: PayloadAction<CategoriesTypes>) {
-      if (state.categories.length > 0) {
-        const lastCategory = state.categories[state.categories.length - 1];
-        action.payload.id = lastCategory.id + 1;
-      } else {
-        action.payload.id = 1;
-      }
-      state.categories.push(action.payload);
-    },
-    deleteCategory(state, action: PayloadAction<number>) {
-      state.categories = state.categories.filter(
-        (category) => category.id !== action.payload
-      );
-    },
-    changeData(
-      state,
-      action: PayloadAction<{ id: number; changedCategory: CategoriesTypes }>
-    ) {
-      const indexOfObjToChange = state.categories.findIndex(
-        (category) => category.id === action.payload.id
-      );
-      state.categories[indexOfObjToChange] = action.payload.changedCategory;
-    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchCategories.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchCategories.fulfilled, (state, action) => {
+        state.categories = action.payload;
+        state.loading = false;
+      })
+      .addCase(deleteCategory.fulfilled, (state, action) => {
+        state.categories = state.categories.filter(
+          (category) => category.id !== action.payload
+        );
+      })
+      .addCase(addNewCategory.fulfilled, (state, action) => {
+        state.categories.push(action.payload);
+      })
+      .addCase(changeData.fulfilled, (state, action) => {
+        const indexOfObjToChange = state.categories.findIndex(
+          (category) => category.id === action.payload.id
+        );
+        state.categories[indexOfObjToChange] = action.payload;
+      })
+      .addMatcher(isError, (state, action: PayloadAction<string>) => {
+        state.error = action.payload;
+        state.loading = false;
+      });
   },
 });
 
-export const { setCategorySearch, addNewCategory, deleteCategory, changeData } =
-  CategorySlice.actions;
+export const { setCategorySearch } = CategorySlice.actions;
 
 export default CategorySlice.reducer;

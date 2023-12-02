@@ -12,6 +12,7 @@ const EditPage: React.FC<EditPageProps> = () => {
   const { categories } = useAppSelector((state) => state.category);
   if (!id) return <div>No exist category</div>;
   const category = filterDataById(categories, parseInt(id));
+
   return (
     <>
       <Title>Edit Category</Title>

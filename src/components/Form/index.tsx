@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { CategoriesTypes } from "../../@types/categories";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../redux/hooks";
-import { addNewCategory, changeData } from "../../redux/Category/slice";
-
+import { addNewCategory, changeData } from "../../redux/Category/asyncActions";
 type FormProps = {
   category?: CategoriesTypes;
 };
 
 const Form: React.FC<FormProps> = ({ category }) => {
+  const [error, setError] = React.useState("");
   const dispatch = useAppDispatch();
   const [nameCategory, setNameCategory] = useState(
     category ? category.name : ""
@@ -17,22 +17,18 @@ const Form: React.FC<FormProps> = ({ category }) => {
     category ? category.description : ""
   );
   const navigate = useNavigate();
-
   const submit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-
     if (category) {
       if (nameCategory && descriptionCategory) {
         dispatch(
           changeData({
             id: category.id,
-            changedCategory: {
-              id: category.id,
-              name: nameCategory,
-              description: descriptionCategory,
-            },
+            name: nameCategory,
+            description: descriptionCategory,
           })
         );
+        setError("");
         navigate("/");
         return;
       }
@@ -45,10 +41,13 @@ const Form: React.FC<FormProps> = ({ category }) => {
           description: descriptionCategory,
         })
       );
+      setError("");
       setNameCategory("");
       setDescriptionCategory("");
       navigate("/");
+      return;
     }
+    setError("Заповніть всі поля");
   };
 
   const reset = () => {
@@ -64,6 +63,7 @@ const Form: React.FC<FormProps> = ({ category }) => {
           className="custom-input"
           id="nameCategory"
           type="text"
+          name="category"
           placeholder="Enter category..."
           value={nameCategory}
           onChange={(e) => setNameCategory(e.target.value)}
@@ -76,10 +76,12 @@ const Form: React.FC<FormProps> = ({ category }) => {
           id="shortDescription"
           type="text"
           placeholder="Enter description..."
+          name="description"
           value={descriptionCategory}
           onChange={(e) => setDescriptionCategory(e.target.value)}
         />
       </div>
+      {error && <p className="custom-form-error">{error}</p>}
       <div className="custom-block-cover-btns">
         <button className="custom-btn-save" type="submit">
           Save

@@ -11,7 +11,7 @@ type EditTransactionPageProps = {};
 const EditTransactionPage: React.FC<EditTransactionPageProps> = () => {
   const { id } = useParams();
   const { transactions } = useAppSelector((state) => state.transaction);
-  if (!id) return <div>No exist category</div>;
+  if (!id) return <div>No exist transaction</div>;
   const transaction = filterDataById<TransactionsTypes>(
     transactions,
     parseInt(id)

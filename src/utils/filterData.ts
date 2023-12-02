@@ -29,23 +29,28 @@ export const filterTransactions = <T extends TransactionsTypes>(
   if (Array.isArray(gotValue)) {
     return items.filter(
       (item) =>
-        item.TypeOfOperation === gotValue[0] && item.category === gotValue[1]
+        item.typeOfOperation.toLowerCase() === gotValue[0].toLowerCase() &&
+        item.category.toLowerCase() === gotValue[1].toLowerCase()
     );
   }
-  return items.filter((item) => item.TypeOfOperation === gotValue);
+  return items.filter(
+    (item) => item.typeOfOperation.toLowerCase() === gotValue.toLowerCase()
+  );
 };
 export const filterDatesInRange = (
   items: TransactionsTypes[],
   dateFrom: string,
   dateTo: string
 ) => {
-  return items.filter((item) => {
-    const date = new Date(item.date);
-    return date >= new Date(dateFrom) && date <= new Date(dateTo);
-  });
+  return items.length > 0
+    ? items.filter((item) => {
+        const date = new Date(item.date);
+        return date >= new Date(dateFrom) && date <= new Date(dateTo);
+      })
+    : [];
 };
-export const total = (items: TransactionsTypes[]) => {
+export const calcTotal = (items: TransactionsTypes[]) => {
   return items.length > 1
-    ? items.reduce((acc, cur) => acc + cur.total, 0)
-    : items[0].total;
+    ? items.reduce((acc, cur) => acc + cur?.total, 0)
+    : items[0]?.total;
 };

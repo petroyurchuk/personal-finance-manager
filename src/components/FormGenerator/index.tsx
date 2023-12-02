@@ -1,15 +1,17 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
   setCategory,
   setOperationType,
   setDateTo,
   setDateFrom,
-  setGeneratedData,
 } from "../../redux/Generate/slice";
-import { useNavigate } from "react-router-dom";
+
 type FormGeneratorProps = {};
+
 const FormGenerator: React.FC<FormGeneratorProps> = () => {
+  const [error, setError] = React.useState("");
   const { transactions } = useAppSelector((state) => state.transaction);
   const { dateFrom, dateTo, operationType, category } = useAppSelector(
     (state) => state.generate
@@ -19,29 +21,31 @@ const FormGenerator: React.FC<FormGeneratorProps> = () => {
 
   const submit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    if (dateFrom && dateTo && operationType && category) {
+    if (dateFrom && dateTo && operationType) {
+      setError("");
       navigate("/graphic-page");
-      dispatch(
-        setGeneratedData({
-          id: 1,
-          category,
-          dateFrom,
-          dateTo,
-          operationType,
-        })
-      );
+      return;
     }
+    setError("Заповніть всі поля");
   };
-
+  const handleGraphic = () => {
+    navigate("/line-graphic");
+  };
+  const reset = () => {
+    setCategory({ key: "" });
+    setOperationType({ key: "" });
+    setDateTo({ key: "" });
+    setDateFrom({ key: "" });
+  };
   return (
-    <form className="custom-form " onSubmit={submit}>
+    <form className="custom-form " onSubmit={submit} onReset={reset}>
       <div className="custom-block-cover">
         <label htmlFor="data-from">Дата YYYY-MM-DD</label>
         <input
           className="custom-input"
           id="data-from"
           value={dateFrom}
-          onChange={(e) => dispatch(setDateFrom(e.target.value))}
+          onChange={(e) => dispatch(setDateFrom({ key: e.target.value }))}
           type="date"
         />
       </div>
@@ -51,7 +55,7 @@ const FormGenerator: React.FC<FormGeneratorProps> = () => {
           className="custom-input"
           id="data-to"
           value={dateTo}
-          onChange={(e) => dispatch(setDateTo(e.target.value))}
+          onChange={(e) => dispatch(setDateTo({ key: e.target.value }))}
           type="date"
         />
       </div>
@@ -61,7 +65,7 @@ const FormGenerator: React.FC<FormGeneratorProps> = () => {
           id="type-operation"
           className="custom-selector"
           value={operationType}
-          onChange={(e) => dispatch(setOperationType(e.target.value))}
+          onChange={(e) => dispatch(setOperationType({ key: e.target.value }))}
         >
           <option>Виберіть тип операції</option>
           <option value={"Витрата"}>Витрата</option>
@@ -73,7 +77,7 @@ const FormGenerator: React.FC<FormGeneratorProps> = () => {
         <select
           className="custom-selector"
           value={category}
-          onChange={(e) => dispatch(setCategory(e.target.value))}
+          onChange={(e) => dispatch(setCategory({ key: e.target.value }))}
           id="select-category"
         >
           <option>Виберіть категорію</option>
@@ -84,6 +88,7 @@ const FormGenerator: React.FC<FormGeneratorProps> = () => {
           ))}
         </select>
       </div>
+      {error && <p className="custom-form-error">{error}</p>}
       <div className="custom-block-cover-btns">
         <button type="submit" className="custom-btn-save">
           Згенерувати
@@ -91,7 +96,11 @@ const FormGenerator: React.FC<FormGeneratorProps> = () => {
         <button type="reset" className="custom-btn-reset">
           Очистити
         </button>
-        <button type="button" className="custom-btn-reset custom-btn-graphic">
+        <button
+          onClick={handleGraphic}
+          type="button"
+          className="custom-btn-reset custom-btn-graphic"
+        >
           Графік
         </button>
         <button className="custom-btn-reset custom-btn-date">По датам</button>

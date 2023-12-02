@@ -1,53 +1,46 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { GenerateInitialStateTypes } from "../../@types/generate";
+import { ActionType } from "./types";
+
+const startDate: ActionType = JSON.parse(
+  localStorage.getItem("startDate") || ""
+);
+const endDate: ActionType = JSON.parse(localStorage.getItem("endDate") || "");
+const operationType: ActionType = JSON.parse(
+  localStorage.getItem("operationType") || ""
+);
+const category: ActionType = JSON.parse(localStorage.getItem("category") || "");
 
 const initialState: GenerateInitialStateTypes = {
-  dateFrom: new Date().toISOString().split("T")[0],
-  dateTo: new Date().toISOString().split("T")[0],
-  operationType: "",
-  category: "",
-  generatedData: [],
+  dateFrom: startDate.key,
+  dateTo: endDate.key,
+  operationType: operationType.key,
+  category: category.key,
 };
 
 const GenerateSlice = createSlice({
   name: "generate",
   initialState,
   reducers: {
-    setDateFrom(state, action: PayloadAction<string>) {
-      state.dateFrom = action.payload;
+    setDateFrom(state, action: PayloadAction<ActionType>) {
+      state.dateFrom = action.payload.key;
+      localStorage.setItem("startDate", JSON.stringify(action.payload));
     },
-    setDateTo(state, action: PayloadAction<string>) {
-      state.dateTo = action.payload;
+    setDateTo(state, action: PayloadAction<ActionType>) {
+      state.dateTo = action.payload.key;
+      localStorage.setItem("endDate", JSON.stringify(action.payload));
     },
-    setOperationType(state, action: PayloadAction<string>) {
-      state.operationType = action.payload;
+    setOperationType(state, action: PayloadAction<ActionType>) {
+      state.operationType = action.payload.key;
+      localStorage.setItem("operationType", JSON.stringify(action.payload));
     },
-    setCategory(state, action: PayloadAction<string>) {
-      state.category = action.payload;
-    },
-    setGeneratedData(
-      state,
-      action: PayloadAction<
-        Omit<GenerateInitialStateTypes & { id: number }, "generatedData">
-      >
-    ) {
-      if (state.generatedData.length > 0) {
-        const lastCategory =
-          state.generatedData[state.generatedData.length - 1];
-        action.payload.id = lastCategory.id + 1;
-      } else {
-        action.payload.id = 1;
-      }
-      state.generatedData.push(action.payload);
+    setCategory(state, action: PayloadAction<ActionType>) {
+      state.category = action.payload.key;
+      localStorage.setItem("category", JSON.stringify(action.payload));
     },
   },
 });
 
-export const {
-  setDateFrom,
-  setDateTo,
-  setOperationType,
-  setCategory,
-  setGeneratedData,
-} = GenerateSlice.actions;
+export const { setDateFrom, setDateTo, setOperationType, setCategory } =
+  GenerateSlice.actions;
 export default GenerateSlice.reducer;
